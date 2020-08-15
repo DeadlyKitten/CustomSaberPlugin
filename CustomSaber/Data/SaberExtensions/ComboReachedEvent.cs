@@ -7,7 +7,9 @@ namespace CustomSaber
     public class ComboReachedEvent : EventFilterBehaviour
     {
         public int ComboTarget = 50;
+        public bool InvokeEveryNCombo = false;
         public UnityEvent NthComboReached;
+        public UnityEvent ComboDropped;
 
 #if PLUGIN
         private void OnEnable() => EventManager.OnComboChanged.AddListener(OnComboReached);
@@ -16,6 +18,12 @@ namespace CustomSaber
         private void OnComboReached(int combo)
         {
             if (combo == ComboTarget)
+            {
+                NthComboReached.Invoke();
+            }else if(combo == 0)
+            {
+                ComboDropped?.Invoke();
+            }else if(InvokeEveryNCombo == true && combo % ComboTarget == 0)
             {
                 NthComboReached.Invoke();
             }
